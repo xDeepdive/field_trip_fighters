@@ -6,11 +6,9 @@ signal host_ip_inputed
 signal reconnect_to_peer_request
 
 
-const DEBUG_HOST_TCP_PORT =3000
-const DEBUG_HOST_UDP_PORT =3001
-const DEBUG_CLIENT_TCP_PORT =2000
-const DEBUG_CLIENT_UDP_PORT =2001
-const DEBUG_HOST_IP_ADDR="10.0.0.103"
+# Default ports for easy setup
+const DEFAULT_HOST_PORT = 7777
+const DEFAULT_CLIENT_PORT = 7777
 
 const frameTimerResource = preload("res://frameTimer.gd")
 
@@ -126,21 +124,15 @@ func init(_port):
 	cnxAttemptDuration=0
 	inPostSessionState=false
 	attemptingToConnect = false
-	
-	if debugNetcodeFlag:
-		if gameMode == GLOBALS.GameModeType.ONLINE_CONNECTING_TO_HOST:
-			tcpPortValueLabel.text = str(DEBUG_CLIENT_TCP_PORT)
-			udpPortValueLabel.text = str(DEBUG_CLIENT_UDP_PORT)
-		else:
-			tcpPortValueLabel.text = str(DEBUG_HOST_TCP_PORT)
-			udpPortValueLabel.text = str(DEBUG_HOST_UDP_PORT)
-			
-		ipAddrField.text= str(DEBUG_HOST_IP_ADDR)
-		
-		
-	else:
-		tcpPortValueLabel.text = str(_port)
-		udpPortValueLabel.text = str(_port+1)
+
+	# Always use the provided port or default
+	var display_port = _port if _port != null else DEFAULT_HOST_PORT
+	tcpPortValueLabel.text = str(display_port)
+	udpPortValueLabel.text = str(display_port + 1)
+
+	# Set placeholder text for IP field to help users
+	if ipAddrField:
+		ipAddrField.placeholder_text = "Enter host IP (e.g., 192.168.1.100)"
 		
 	if gameMode == GLOBALS.GameModeType.ONLINE_HOSTING:
 		attemptingToConnect = false
